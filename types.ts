@@ -1,24 +1,30 @@
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
+export interface GameSettings {
+  gender: string;
+  age: string;
+  setting: string;
+  genre: string;
+}
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, '.', '');
-  return {
-    server: {
-      port: 3000,
-      host: '0.0.0.0',
-    },
-    plugins: [react()],
-    base: '/syousetu/',
-    define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      }
-    }
-  };
-});
+export interface StorySegment {
+  id: string;
+  text: string;
+  choices: string[];
+  imagePrompt: string;
+  imageUrl?: string; // Populated after image generation
+  isUserAction?: boolean; // If this segment represents a user's choice
+  userActionText?: string;
+}
+
+export interface StoryState {
+  segments: StorySegment[];
+  isLoadingText: boolean;
+  isLoadingImage: boolean;
+  gameStarted: boolean;
+  error: string | null;
+}
+
+export enum Step {
+  SETUP,
+  PLAYING,
+  ERROR
+}
